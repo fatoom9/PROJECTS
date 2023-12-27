@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Calendar</title>
+    <!-- Add any CSS stylesheets or libraries for the calendar (e.g., Bootstrap) -->
+    <!-- Example: <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+</head>
+<body>
+    <div id="calendar"></div>
+
+    <!-- Include the required libraries using CDN links -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- Include Moment.js for react-big-calendar -->
+    <script src="https://unpkg.com/moment/min/moment.min.js"></script>
+    <!-- Include React Big Calendar -->
+    <script src="https://unpkg.com/react-big-calendar@0.36.0/dist/react-big-calendar.js"></script>
+
+    <script>
+        // Fetch events from your API endpoint
+        fetch('http://localhost:3000/api/events')
+            .then(response => response.json())
+            .then(events => {
+                // Render the calendar with the fetched events
+                renderCalendar(events);
+            })
+            .catch(error => console.error('Error fetching events:', error));
+
+        function renderCalendar(events) {
+            // Define the localizer for date formatting using moment
+            const momentLocalizer = window.ReactBigCalendar.momentLocalizer(moment);
+
+            // Define the events as an array of objects
+            const myEventsList = events.map(event => ({
+                id: event.id,
+                title: event.event_name,
+                start: new Date(event.event_date),
+                end: new Date(event.event_date),
+                allDay: true,
+            }));
+
+            // Render the calendar
+            window.ReactDOM.render(
+                window.React.createElement(window.ReactBigCalendar.Calendar, {
+                    localizer: momentLocalizer,
+                    events: myEventsList,
+                    startAccessor: 'start',
+                    endAccessor: 'end',
+                    titleAccessor: 'title',
+                }),
+                document.getElementById('calendar')
+            );
+        }
+    </script>
+</body>
+</html>
