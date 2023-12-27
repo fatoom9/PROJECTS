@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental Data Chart</title>
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- HTML container for the chart -->
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+        // Your client-side JavaScript code here
+        fetch('http://localhost:3000/api/environmental-data')
+            .then(response => response.json())
+            .then(data => {
+                // Process the data
+                const timestamps = data.map(entry => entry.timestamp);
+                const airQualityValues = data.map(entry => entry.air_quality);
+                const temperatureValues = data.map(entry => entry.temperature);
+                const humidityValues = data.map(entry => entry.humidity);
+
+                // Create a line chart using Chart.js
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: timestamps,
+                        datasets: [
+                            {
+                                label: 'Air Quality',
+                                data: airQualityValues,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1,
+                                fill: false,
+                            },
+                            {
+                                label: 'Temperature',
+                                data: temperatureValues,
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1,
+                                fill: false,
+                            },
+                            {
+                                label: 'Humidity',
+                                data: humidityValues,
+                                borderColor: 'rgba(255, 205, 86, 1)',
+                                borderWidth: 1,
+                                fill: false,
+                            },
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        // Add more options as needed
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
